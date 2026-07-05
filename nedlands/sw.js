@@ -1,5 +1,5 @@
-/* Nedlands Golf Club service worker - v9781fafa */
-const CACHE = "ngc-shell-9781fafa";
+/* Nedlands Golf Club service worker - v9781fafa-kml1 */
+const CACHE = "ngc-shell-9781fafa-kml1";
 const FONT_CACHE = "ngc-fonts-v1";
 const SHELL = ["./","./index.html","./manifest.webmanifest",
   "./icons/icon-192.png","./icons/icon-512.png","./icons/maskable-512.png","./icons/apple-touch-icon.png"];

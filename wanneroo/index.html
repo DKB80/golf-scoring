@@ -296,7 +296,7 @@ function totalDist(pts){ return legs(pts).reduce((a,b)=>a+b,0); }
 
 /* ==== state ==== */
 const S = { view:"home", members:[], rounds:[], round:null, viewId:null,
-  ui:{ editId:null, showCard:false, confirmEnd:false, showMaps:false, capturing:null, trail:{}, setFmt:"stableford", setMode:"18", picked:[] } };
+  ui:{ editId:null, showCard:false, confirmEnd:false, showMaps:false, kmlDone:false, capturing:null, trail:{}, setFmt:"stableford", setMode:"18", picked:[] } };
 
 function load(){
   try{ S.members = JSON.parse(localStorage.getItem(APP_KEY+":members"))||[]; }catch(e){ S.members=[]; }
@@ -359,7 +359,7 @@ function step(pid,delta){
   S.round.scores[pid][hole.hole]=v; saveActive(); render();
 }
 function goHole(d){ const n=S.round.idx+d; if(n<0||n>=S.round.holes.length) return; S.round.idx=n; S.ui.showCard=false; saveActive(); render(); window.scrollTo({top:0,behavior:"smooth"}); }
-function finishRound(){ S.round.finished=true; S.rounds.unshift(S.round); S.rounds=S.rounds.slice(0,60); saveRounds(); localStorage.setItem(APP_KEY+":active","null"); S.viewId=S.round.id; S.view="summary"; S.ui.confirmEnd=false; render(); }
+function finishRound(){ S.round.finished=true; S.rounds.unshift(S.round); S.rounds=S.rounds.slice(0,60); saveRounds(); localStorage.setItem(APP_KEY+":active","null"); S.viewId=S.round.id; S.view="summary"; S.ui.confirmEnd=false; S.ui.showMaps=false; S.ui.kmlDone=false; render(); }
 function abandonRound(){ localStorage.setItem(APP_KEY+":active","null"); S.round=null; S.view="home"; render(); }
 
 /* geolocation capture: keep best fix over a short window */
@@ -426,6 +426,63 @@ function trailSVG(pts){
   const barPx=nice*scale;
   const bar=`<line x1="12" y1="${H-12}" x2="${12+barPx}" y2="${H-12}" stroke="rgba(255,255,255,.8)" stroke-width="2"/><text x="12" y="${H-16}" fill="rgba(255,255,255,.8)" font-size="10" font-family="sans-serif">${nice} m</text>`;
   return `<svg viewBox="0 0 ${W} ${H}"><polyline points="${line.trim()}" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.6" stroke-dasharray="3 3"/>${dots}${bar}</svg>`;
+}
+
+/* ==== KML export (Google Earth) ==== */
+function summaryRound(){ return S.rounds.find(r=>r.id===S.viewId) || S.round; }
+function kmlCoord(p){ return `${p.lng.toFixed(7)},${p.lat.toFixed(7)},0`; }
+function buildKML(R){
+  const dateStr=new Date(R.date).toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"});
+  const fmtLbl=(R.format==="stableford"?"Stableford":"Stroke play")+" · "+SET_LABELS[R.holesMode];
+  const ICON="https://maps.google.com/mapfiles/kml/paddle/";
+  let k=`<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2"><Document>\n`;
+  k+=`<name>${esc(CLUB.name+" — "+dateStr)}</name>\n<description>${esc(fmtLbl)}</description>\n`;
+  k+=`<Style id="kt"><LineStyle><color>ccffffff</color><width>3</width></LineStyle></Style>\n`;
+  [["s","grn"],["m","wht"],["e","ylw"]].forEach(([sid,c])=>{
+    k+=`<Style id="k${sid}"><IconStyle><scale>1.1</scale><Icon><href>${ICON}${c}-circle.png</href></Icon></IconStyle></Style>\n`;
+  });
+  R.players.forEach(p=>{
+    const holesWith=R.holes.filter(x=>R.shots[p.id]&&R.shots[p.id][x.hole]&&R.shots[p.id][x.hole].length);
+    if(!holesWith.length) return;
+    k+=`<Folder><name>${esc(p.name)}</name>\n`;
+    holesWith.forEach(x=>{
+      const pts=R.shots[p.id][x.hole], dist=totalDist(pts);
+      k+=`<Folder><name>${esc("Hole "+x.hole+" · Par "+x.par+(dist?" · "+fmtM(dist):""))}</name>\n`;
+      pts.forEach((pt,i)=>{
+        const sid=i===0?"s":i===pts.length-1?"e":"m";
+        const label=i===0?"Start":i===pts.length-1?"Finish":("Shot "+i);
+        k+=`<Placemark><name>${esc(label)}</name><styleUrl>#k${sid}</styleUrl>`;
+        k+=`<description>${esc("Hole "+x.hole+" · position "+(i+1)+" of "+pts.length+" · ±"+Math.round(pt.acc)+" m")}</description>`;
+        k+=`<Point><coordinates>${kmlCoord(pt)}</coordinates></Point></Placemark>\n`;
+      });
+      if(pts.length>1){
+        k+=`<Placemark><name>${esc("Hole "+x.hole+" trail")}</name><styleUrl>#kt</styleUrl>`;
+        k+=`<LineString><tessellate>1</tessellate><coordinates>${pts.map(kmlCoord).join(" ")}</coordinates></LineString></Placemark>\n`;
+      }
+      k+=`</Folder>\n`;
+    });
+    k+=`</Folder>\n`;
+  });
+  k+=`</Document></kml>\n`;
+  return k;
+}
+function exportKML(R){
+  if(!R) return;
+  const kml=buildKML(R);
+  const fname=(CLUB.name.replace(/[^a-z0-9]+/gi,"-").replace(/^-|-$/g,"")||"round")+"-"+R.date.slice(0,10)+".kml";
+  const blob=new Blob([kml],{type:"application/vnd.google-earth.kml+xml"});
+  try{
+    const file=new File([blob],fname,{type:"application/vnd.google-earth.kml+xml"});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      navigator.share({files:[file],title:CLUB.name,text:"Golf shot map · open in Google Earth"}).catch(()=>{});
+      return;
+    }
+  }catch(e){}
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download=fname;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),5000);
+  S.ui.kmlDone=true; render();
 }
 
 /* ==== views ==== */
@@ -567,7 +624,8 @@ function view_summary(){
   // shot maps if any
   const anyShots = R.players.some(p=> R.holes.some(x=> (R.shots[p.id]&&R.shots[p.id][x.hole]&&R.shots[p.id][x.hole].length)));
   if(anyShots){
-    h+=`<button class="ghost sm" style="width:100%" data-action="toggle-maps">${S.ui.showMaps?"Hide shot maps":"Show shot maps"}</button>`;
+    h+=`<div class="btn-row"><button class="ghost sm" style="flex:1" data-action="toggle-maps">${S.ui.showMaps?"Hide shot maps":"Show shot maps"}</button><button class="ghost sm" style="flex:1" data-action="export-kml">🌍 Export KML</button></div>`;
+    if(S.ui.kmlDone) h+=`<div class="gps-banner">KML saved. Open it in <b>Google Earth</b> — on a computer double-click the file, or drag it into <a href="https://earth.google.com/web/" target="_blank" rel="noopener" style="color:var(--claret);font-weight:700">Google Earth for web</a>. On a phone, choose the Google Earth app from the share sheet.</div>`;
     if(S.ui.showMaps){
       R.players.forEach(p=>{
         const holesWith = R.holes.filter(x=> R.shots[p.id]&&R.shots[p.id][x.hole]&&R.shots[p.id][x.hole].length);
@@ -604,10 +662,10 @@ document.addEventListener("click", e=>{
   const a=t.dataset.action, id=t.dataset.id, pid=t.dataset.pid;
   switch(a){
     case "brand": S.viewId=null; S.view = hasActiveRound()?"play":"home"; render(); break;
-    case "nav-home": S.viewId=null; S.view="home"; render(); break;
+    case "nav-home": S.viewId=null; S.view="home"; S.ui.kmlDone=false; render(); break;
     case "new-round": S.view="setup"; render(); break;
     case "resume": S.view="play"; render(); break;
-    case "open-round": S.viewId=id; S.view="summary"; S.ui.showMaps=false; render(); break;
+    case "open-round": S.viewId=id; S.view="summary"; S.ui.showMaps=false; S.ui.kmlDone=false; render(); break;
     case "add-member": addMember(); break;
     case "del-member": S.members=S.members.filter(m=>m.id!==id); saveMembers(); render(); break;
     case "edit-hcp": S.ui.editId=id; render(); const f=document.getElementById("edit-hcp"); if(f){f.focus();f.select();} break;
@@ -624,6 +682,7 @@ document.addEventListener("click", e=>{
     case "toggle-trail": toggleTrail(pid); break;
     case "toggle-card": S.ui.showCard=!S.ui.showCard; render(); break;
     case "toggle-maps": S.ui.showMaps=!S.ui.showMaps; render(); break;
+    case "export-kml": exportKML(summaryRound()); break;
     case "ask-finish": S.ui.confirmEnd=true; render(); break;
     case "cancel-finish": if(t.dataset.stop) break; S.ui.confirmEnd=false; render(); break;
     case "confirm-finish": finishRound(); break;

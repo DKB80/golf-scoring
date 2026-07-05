@@ -1,5 +1,5 @@
-/* Wanneroo Golf Club service worker - vf49fa4fb */
-const CACHE = "wgc-shell-f49fa4fb";
+/* Wanneroo Golf Club service worker - vf49fa4fb-kml1 */
+const CACHE = "wgc-shell-f49fa4fb-kml1";
 const FONT_CACHE = "wgc-fonts-v1";
 const SHELL = ["./","./index.html","./manifest.webmanifest",
   "./icons/icon-192.png","./icons/icon-512.png","./icons/maskable-512.png","./icons/apple-touch-icon.png"];
