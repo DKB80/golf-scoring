@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#153a2b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Wanneroo Golf Club · Scoring</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --fd:"Fraunces",Georgia,serif; --fb:"Inter",system-ui,sans-serif; --dw:600;
+  --bg1:#1e5340; --bg2:#153a2b; --bg3:#0e2a1e;
+  --surface:#faf5e9; --surface2:#f2e9d4; --surface3:#e6d9bb;
+  --primary1:#c8a24b; --primary2:#a37e2c; --primary-txt:#0e2a1e;
+  --control:#163f2e; --control-txt:#faf5e9;
+  --accent1:#c8a24b; --accent2:#a37e2c; --accent-txt:#0e2a1e; --accent-lite:#e4cf95;
+  --tee-alt:#2b5fa5;
+  --ink:#20241d; --ink-soft:#4a5348; --line:rgba(20,40,30,.14);
+  --claret:#8f2b2b; --slate:#40504a;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{
+  min-height:100vh;color:var(--surface);
+  font-family:var(--fb);
+  background:radial-gradient(125% 85% at 50% -10%, var(--bg1) 0%, var(--bg2) 44%, var(--bg3) 100%);
+  background-attachment:fixed;-webkit-font-smoothing:antialiased;
+}
+.masthead{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:calc(14px + env(safe-area-inset-top)) 18px 14px;background:linear-gradient(180deg,var(--bg3),color-mix(in srgb,var(--bg3) 80%,transparent));
+  border-bottom:1px solid color-mix(in srgb,var(--accent1) 30%,transparent);backdrop-filter:blur(8px)}
+.brand{display:flex;align-items:center;gap:12px;background:none;border:0;padding:0;cursor:pointer;color:inherit;text-align:left}
+.crest{width:46px;height:46px;flex:none}
+.brand-name{font-family:var(--fd);font-weight:var(--dw);font-size:1.14rem;color:var(--surface);letter-spacing:.3px;display:block;line-height:1.05}
+.brand-sub{font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--accent1);font-weight:700;margin-top:3px;display:block}
+.live-tag{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--bg3);background:var(--accent-lite);padding:5px 9px;border-radius:100px}
+.wrap{max-width:640px;margin:0 auto;padding:18px 16px 40px}
+.stack{display:flex;flex-direction:column;gap:16px}
+.foot{max-width:640px;margin:0 auto;padding:22px 16px calc(34px + env(safe-area-inset-bottom));text-align:center;font-size:.72rem;color:color-mix(in srgb,var(--accent-lite) 55%,transparent);letter-spacing:.03em;line-height:1.6}
+
+.panel{background:var(--surface);color:var(--ink);border-radius:16px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.24);border:1px solid color-mix(in srgb,var(--primary1) 18%,transparent)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.panel h2{margin:0;font-family:var(--fd);font-weight:var(--dw);font-size:1.2rem;letter-spacing:.3px}
+.count{font-size:.72rem;font-weight:700;color:var(--primary1);background:var(--surface2);border-radius:100px;padding:3px 10px;min-width:26px;text-align:center}
+.sub{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);font-weight:700;margin:2px 0 8px}
+.empty{color:var(--ink-soft);font-size:.9rem;margin:8px 2px 2px;line-height:1.5}
+
+.resume-card{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
+  background:linear-gradient(120deg,var(--accent1),var(--accent2));color:var(--accent-txt);border:0;border-radius:16px;padding:14px 16px;box-shadow:0 10px 26px rgba(0,0,0,.25)}
+.resume-card strong{display:block;font-family:var(--fd);font-weight:var(--dw);font-size:1.04rem}
+.resume-card em{display:block;font-style:normal;font-size:.78rem;opacity:.82}
+.resume-dot{width:10px;height:10px;border-radius:50%;background:var(--primary1);flex:none;box-shadow:0 0 0 4px color-mix(in srgb,var(--primary1) 22%,transparent)}
+.resume-arrow{margin-left:auto;font-size:1.3rem;font-weight:700}
+
+.tee-btn{width:100%;text-align:left;cursor:pointer;border:1px solid color-mix(in srgb,var(--accent1) 45%,transparent);border-radius:18px;padding:20px 18px;color:var(--surface);
+  background:linear-gradient(160deg,color-mix(in srgb,var(--bg2) 92%,transparent),color-mix(in srgb,var(--bg3) 92%,transparent));position:relative;overflow:hidden}
+.tee-btn:disabled{opacity:.55}
+.tee-btn::after{content:"";position:absolute;right:-28px;top:-28px;width:120px;height:120px;border-radius:50%;border:14px solid color-mix(in srgb,var(--accent1) 14%,transparent)}
+.tee-btn-label{display:block;font-family:var(--fd);font-weight:var(--dw);font-size:1.5rem}
+.tee-btn-sub{display:block;margin-top:4px;font-size:.82rem;color:var(--accent-lite)}
+
+.add-row{display:flex;gap:8px;margin-bottom:12px}
+.fld{font-family:inherit;font-size:1rem;border:1px solid var(--line);background:#fff;border-radius:10px;padding:11px 12px;color:var(--ink);min-width:0}
+.fld:focus{outline:2px solid var(--accent2);border-color:transparent}
+.fld-name{flex:1}
+.fld-hcp{width:66px;text-align:center}
+.fld-hcp-sm{width:56px;text-align:center;padding:7px 8px}
+.add-btn{border:0;background:var(--control);color:var(--control-txt);font-weight:700;border-radius:10px;padding:0 16px;cursor:pointer;font-size:.92rem}
+
+.member-list,.round-list,.pick-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.member{display:flex;align-items:center;gap:10px;padding:10px 6px;border-bottom:1px solid var(--line)}
+.member:last-child{border-bottom:0}
+.m-name{flex:1;font-weight:600;font-size:1rem}
+.m-hcp{display:flex;flex-direction:column;align-items:center;background:var(--surface2);border:0;border-radius:9px;padding:5px 11px;cursor:pointer;line-height:1}
+.m-hcp-num{font-weight:800;font-size:1.02rem;color:var(--ink);font-variant-numeric:tabular-nums}
+.m-hcp-lbl{font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-top:2px}
+.m-edit{display:flex;align-items:center;gap:6px}
+.mini{border:0;background:var(--control);color:var(--control-txt);border-radius:8px;padding:7px 10px;font-weight:700;cursor:pointer;font-size:.8rem}
+.m-del{border:0;background:none;color:var(--ink-soft);font-size:1.5rem;line-height:1;cursor:pointer;padding:0 4px;opacity:.55}
+
+.round-row{width:100%;display:flex;align-items:center;gap:12px;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 4px;cursor:pointer;text-align:left;color:var(--ink)}
+.round-list li:last-child .round-row{border-bottom:0}
+.rr-date{font-family:var(--fd);font-weight:var(--dw);font-size:.95rem;width:54px;flex:none;color:var(--primary1)}
+.rr-mid{flex:1;display:flex;flex-direction:column;gap:2px}
+.rr-fmt{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.rr-winner{font-size:.92rem;font-weight:600}
+.rr-arrow{color:var(--primary1);font-size:1.1rem}
+
+.section-title{text-align:center;margin:2px 0}
+.section-title span{font-family:var(--fd);font-weight:var(--dw);font-size:1.44rem;color:var(--surface);letter-spacing:.3px}
+.seg{display:flex;gap:6px;background:var(--surface2);border-radius:12px;padding:5px;margin-bottom:14px}
+.seg.col{flex-direction:column}
+.seg-btn{flex:1;border:0;background:none;padding:11px 6px;border-radius:8px;font-family:inherit;font-weight:600;font-size:.92rem;color:var(--ink-soft);cursor:pointer}
+.seg-btn.on{background:var(--control);color:var(--control-txt);box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.pick{width:100%;display:flex;align-items:center;gap:12px;background:none;border:0;border-bottom:1px solid var(--line);padding:13px 4px;cursor:pointer;text-align:left;color:var(--ink)}
+.pick-list li:last-child .pick{border-bottom:0}
+.tick{width:26px;height:26px;border-radius:8px;border:2px solid var(--surface3);display:grid;place-items:center;font-weight:800;color:var(--control-txt);flex:none}
+.tick.on{background:var(--control);border-color:var(--control)}
+.pick-name{flex:1;font-weight:600;font-size:1.02rem}
+.pick-hcp{font-size:.76rem;color:var(--ink-soft)}
+
+.btn-row{display:flex;gap:10px}
+.primary{flex:1;border:0;border-radius:12px;padding:15px;font-family:var(--fd);font-weight:var(--dw);font-size:1.06rem;letter-spacing:.3px;cursor:pointer;background:linear-gradient(120deg,var(--primary1),var(--primary2));color:var(--primary-txt);box-shadow:0 8px 22px rgba(0,0,0,.24)}
+.primary:disabled{opacity:.5;box-shadow:none}
+.primary.wide{width:100%}
+.ghost{border:1px solid color-mix(in srgb,var(--accent-lite) 40%,transparent);background:rgba(255,255,255,.05);color:var(--surface);border-radius:12px;padding:15px 18px;font-family:inherit;font-weight:600;cursor:pointer}
+.ghost.sm{padding:12px 16px}
+
+.board{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+.board-cell{flex:1;min-width:78px;background:color-mix(in srgb,var(--bg3) 55%,transparent);border:1px solid color-mix(in srgb,var(--accent1) 22%,transparent);border-radius:12px;padding:10px 8px;text-align:center}
+.board-cell.leading{border-color:var(--accent1);background:color-mix(in srgb,var(--accent1) 16%,transparent)}
+.bc-name{display:block;font-size:.74rem;font-weight:600;color:var(--accent-lite);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bc-val{display:block;font-size:1.7rem;font-weight:800;color:var(--surface);line-height:1.1;font-variant-numeric:tabular-nums}
+.bc-sub{display:block;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:color-mix(in srgb,var(--accent-lite) 62%,transparent);margin-top:1px}
+
+.hole-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:2px}
+.nav{width:52px;height:52px;flex:none;border-radius:50%;border:1px solid color-mix(in srgb,var(--accent1) 40%,transparent);background:rgba(255,255,255,.06);color:var(--accent-lite);font-size:1.8rem;line-height:1;cursor:pointer}
+.nav:disabled{opacity:.3}
+.hole-id{text-align:center;display:flex;flex-direction:column;align-items:center}
+.tee-chip{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:3px 10px;border-radius:100px;margin-bottom:5px}
+.tee-chip.white{background:var(--surface);color:var(--ink)}
+.tee-chip.blue{background:var(--tee-alt);color:#fff}
+.hi-num{display:block;font-family:var(--fd);font-weight:var(--dw);font-size:3.2rem;line-height:1;color:var(--surface)}
+.hi-meta{display:block;font-size:.8rem;letter-spacing:.05em;color:var(--accent-lite);margin-top:3px}
+.hole-progress{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-top:2px}
+.pip{width:16px;height:4px;border-radius:3px;background:rgba(255,255,255,.16)}
+.pip.done{background:color-mix(in srgb,var(--accent-lite) 60%,transparent)}
+.pip.blue.done{background:color-mix(in srgb,var(--tee-alt) 75%,transparent)}
+.pip.on{background:var(--accent1);width:22px}
+
+.entry-list{display:flex;flex-direction:column;gap:10px}
+.entry{background:var(--surface);color:var(--ink);border-radius:14px;padding:12px 14px;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.entry-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+.e-name{font-weight:var(--dw);font-size:1.1rem;font-family:var(--fd);letter-spacing:.2px}
+.e-strokes{font-size:1rem;color:var(--claret);letter-spacing:2px;display:flex;align-items:baseline;gap:6px}
+.e-strokes em{font-style:normal;font-size:.64rem;letter-spacing:.06em;color:var(--ink-soft);text-transform:uppercase;font-weight:600}
+.stepper{display:flex;align-items:center;gap:12px;justify-content:center}
+.st-btn{width:58px;height:58px;border-radius:14px;border:0;font-size:1.9rem;cursor:pointer;color:#fff;line-height:1;flex:none}
+.st-btn.minus{background:var(--slate)}
+.st-btn.plus{background:var(--control);color:var(--control-txt)}
+.st-btn:active{transform:scale(.94)}
+.st-val{flex:1;max-width:120px;height:58px;display:grid;place-items:center;border-radius:14px;background:var(--surface2);border:2px solid transparent}
+.st-num{font-size:2.1rem;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink)}
+.note-birdie{background:#fff;border-color:var(--claret)}
+.note-birdie .st-num{color:var(--claret)}
+.note-eagle{background:#fff;border-color:var(--claret);box-shadow:0 0 0 4px color-mix(in srgb,var(--claret) 18%,transparent)}
+.note-eagle .st-num{color:var(--claret)}
+.note-bogey{background:var(--surface2);border-color:var(--slate)}
+.note-double{background:var(--slate);border-color:var(--slate)}
+.note-double .st-num{color:#fff}
+.entry-foot{text-align:center;margin-top:8px;min-height:18px}
+.ef-hint{font-size:.78rem;color:var(--ink-soft)}
+.ef-pts{font-size:.92rem;color:var(--ink-soft)}
+.ef-pts strong{color:var(--primary1);font-size:1.05rem}
+
+/* shot plotting */
+.shots{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
+.shot-row{display:flex;gap:8px;align-items:stretch}
+.mark-btn{flex:1;border:0;border-radius:11px;padding:12px;font-family:var(--fb);font-weight:700;font-size:.92rem;cursor:pointer;background:var(--control);color:var(--control-txt);display:flex;align-items:center;justify-content:center;gap:8px}
+.mark-btn:active{transform:scale(.98)}
+.mark-btn.busy{background:var(--surface2);color:var(--ink-soft)}
+.mark-mini{border:1px solid var(--line);background:none;border-radius:11px;padding:0 13px;cursor:pointer;color:var(--ink-soft);font-weight:700;font-size:1.05rem}
+.shot-sum{margin-top:8px;width:100%;text-align:left;background:var(--surface2);border:0;border-radius:10px;padding:9px 12px;cursor:pointer;color:var(--ink);font-size:.82rem;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.shot-sum b{font-weight:700}
+.shot-sum .chev{color:var(--ink-soft)}
+.trail-wrap{margin-top:8px}
+.trail-wrap svg{width:100%;height:auto;display:block;background:var(--bg2);border-radius:11px}
+.legs{list-style:none;margin:8px 0 0;padding:0;font-size:.8rem;color:var(--ink-soft)}
+.legs li{display:flex;justify-content:space-between;padding:4px 2px;border-bottom:1px solid var(--line)}
+.legs li:last-child{border-bottom:0}
+.legs .acc{font-variant-numeric:tabular-nums}
+.acc-good{color:#2e7d46}.acc-ok{color:#b7791f}.acc-poor{color:var(--claret)}
+.gps-banner{background:color-mix(in srgb,var(--claret) 12%,var(--surface));color:var(--ink);border:1px solid color-mix(in srgb,var(--claret) 30%,transparent);border-radius:12px;padding:11px 13px;font-size:.8rem;line-height:1.5}
+.gps-banner b{color:var(--claret)}
+
+.play-actions{display:flex;gap:10px;align-items:center}
+.play-actions .primary{flex:1}
+.abandon{background:none;border:0;color:color-mix(in srgb,var(--accent-lite) 55%,transparent);font-size:.8rem;text-decoration:underline;cursor:pointer;padding:6px;align-self:center}
+
+.card-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;background:var(--surface);border-radius:14px;padding:12px;box-shadow:0 8px 22px rgba(0,0,0,.2)}
+.scorecard{border-collapse:collapse;width:100%;color:var(--ink);font-variant-numeric:tabular-nums}
+.scorecard th,.scorecard td{text-align:center;padding:0;font-size:.82rem}
+.sc-hole th{padding:6px 0 4px;color:var(--surface);background:var(--bg2);font-weight:700}
+.sc-hole .sc-corner{background:var(--bg2);border-top-left-radius:8px}
+.sc-hole th:last-child{border-top-right-radius:8px}
+.sc-hole .tee-white{box-shadow:inset 0 3px 0 var(--surface2)}
+.sc-hole .tee-blue{box-shadow:inset 0 3px 0 var(--tee-alt)}
+.sc-par th{padding:5px 0;color:var(--ink-soft);font-weight:600;background:var(--surface2)}
+.sc-h{width:30px}
+.sc-corner,.sc-player{text-align:left;padding-left:8px;white-space:nowrap;position:sticky;left:0;background:var(--surface);z-index:1;min-width:64px;font-weight:700}
+.sc-hole .sc-corner,.sc-par .sc-corner{background:inherit}
+.sc-player{color:var(--ink);border-bottom:1px solid var(--line);font-family:var(--fd);font-weight:var(--dw);font-size:.92rem}
+.sc-cell{border-bottom:1px solid var(--line);height:34px}
+.sc-tot{font-weight:800;background:var(--surface2);border-bottom:1px solid var(--line);min-width:34px}
+.sc-tot.grand{background:var(--surface3)}
+.mark{display:inline-grid;place-items:center;width:24px;height:24px;font-weight:700;position:relative}
+.mark.dim{color:var(--ink-soft);font-weight:600}
+.mark-birdie,.mark-eagle{color:var(--claret)}
+.mark-birdie::before,.mark-eagle::before{content:"";position:absolute;inset:1px;border:1.5px solid var(--claret);border-radius:50%}
+.mark-eagle::after{content:"";position:absolute;inset:-2px;border:1.5px solid var(--claret);border-radius:50%}
+.mark-bogey::before{content:"";position:absolute;inset:2px;border:1.5px solid var(--slate)}
+.mark-double{color:#fff}
+.mark-double::before{content:"";position:absolute;inset:1px;background:var(--slate)}
+.card-note{color:var(--ink-soft);font-size:.72rem;margin:10px 4px 2px;line-height:1.5}
+
+.trophy-head{text-align:center;padding:8px 0}
+.trophy-mark{font-size:2.6rem}
+.trophy-head h2{font-family:var(--fd);font-weight:var(--dw);font-size:1.5rem;margin:6px 0 2px;color:var(--surface);letter-spacing:.3px}
+.th-sub{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent1);font-weight:700;margin:0}
+.leaderboard{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.lb-row{display:flex;align-items:center;gap:14px;background:var(--surface);color:var(--ink);border-radius:14px;padding:14px 16px;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.lb-row.win{background:linear-gradient(120deg,var(--accent-lite),var(--accent1));border:1px solid var(--accent2)}
+.lb-pos{font-family:var(--fd);font-weight:var(--dw);font-size:1.4rem;color:var(--primary1);width:24px;text-align:center}
+.lb-row.win .lb-pos{color:var(--bg3)}
+.lb-name{flex:1;font-weight:var(--dw);font-size:1.1rem;font-family:var(--fd);display:flex;flex-direction:column;line-height:1.1;letter-spacing:.2px}
+.lb-name em{font-style:normal;font-size:.66rem;letter-spacing:.04em;color:var(--ink-soft);font-family:var(--fb);font-weight:500;margin-top:3px}
+.lb-score{text-align:right;display:flex;flex-direction:column;line-height:1.05}
+.lb-score strong{font-size:1.7rem;font-weight:800;font-variant-numeric:tabular-nums}
+.lb-score em{font-style:normal;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-top:2px}
+.lb-row.win .lb-score em,.lb-row.win .lb-name em{color:color-mix(in srgb,var(--bg3) 72%,transparent)}
+
+.ref{background:color-mix(in srgb,var(--bg3) 40%,transparent);border:1px solid color-mix(in srgb,var(--accent1) 20%,transparent);border-radius:14px;padding:4px}
+.ref>summary{cursor:pointer;padding:12px 14px;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--accent-lite);list-style:none}
+.ref>summary::-webkit-details-marker{display:none}
+.ref>summary::before{content:"\25B8  ";color:var(--accent1)}
+.ref[open]>summary::before{content:"\25BE  "}
+.ref .card-scroll{margin:0 6px 6px}
+.ref-card .sc-cell{height:30px}
+.ref-note{color:color-mix(in srgb,var(--accent-lite) 65%,transparent);font-size:.72rem;line-height:1.6;margin:2px 12px 12px}
+
+.modal{position:fixed;inset:0;z-index:50;background:rgba(4,18,22,.74);display:grid;place-items:center;padding:20px;backdrop-filter:blur(3px)}
+.modal-box{background:var(--surface);color:var(--ink);border-radius:16px;padding:22px;max-width:380px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+.modal-box h3{font-family:var(--fd);font-weight:var(--dw);margin:0 0 8px;font-size:1.3rem}
+.modal-box p{margin:0 0 18px;color:var(--ink-soft);font-size:.92rem;line-height:1.5}
+
+@media(max-width:420px){.st-btn{width:52px;height:52px;font-size:1.7rem}.st-val{height:52px}.hi-num{font-size:2.8rem}.bc-val{font-size:1.5rem}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+"use strict";
+/* ==== injected config ==== */
+const APP_KEY = "wgc";
+const CLUB = { name:"Wanneroo Golf Club", sub:"Members' Scoring", est:"Est 1973", teeDuality:false };
+const CLUB_FOOTER = `Wanneroo Golf Club · White tees · Par 72 · Runs entirely on your device`;
+const CLUB_CREST = `<svg viewBox="0 0 64 64" width="46" height="46"><circle cx="32" cy="32" r="30" fill="none" stroke="#c8a24b" stroke-width="2"/><circle cx="32" cy="32" r="24.5" fill="none" stroke="rgba(228,207,149,.45)" stroke-width="1"/><path d="M22 20 L40 46" stroke="#e4cf95" stroke-width="2.4" stroke-linecap="round" fill="none"/><path d="M42 20 L24 46" stroke="#e4cf95" stroke-width="2.4" stroke-linecap="round" fill="none"/><circle cx="22" cy="19" r="2.6" fill="#e4cf95"/><circle cx="42" cy="19" r="2.6" fill="#e4cf95"/><path d="M32 14 L32 30" stroke="#c8a24b" stroke-width="1.6"/><path d="M32 15 L41 18 L32 21 Z" fill="#8f2b2b"/><text x="32" y="55" fill="#e4cf95" font-family="sans-serif" font-size="6" font-weight="700" text-anchor="middle" letter-spacing=".5">EST 1973</text></svg>`;
+const REF_NOTE = ``;
+const REF_TITLE = `Course scorecard · White tees`;
+const SI_RECON = false;
+const COURSE = [{"hole":1,"par":4,"si":12,"m":337},{"hole":2,"par":5,"si":17,"m":449},{"hole":3,"par":4,"si":13,"m":312},{"hole":4,"par":3,"si":10,"m":187},{"hole":5,"par":4,"si":5,"m":362},{"hole":6,"par":4,"si":2,"m":402},{"hole":7,"par":4,"si":4,"m":387},{"hole":8,"par":3,"si":15,"m":145},{"hole":9,"par":5,"si":7,"m":506},{"hole":10,"par":5,"si":18,"m":435},{"hole":11,"par":3,"si":14,"m":151},{"hole":12,"par":4,"si":3,"m":401},{"hole":13,"par":4,"si":1,"m":406},{"hole":14,"par":4,"si":8,"m":348},{"hole":15,"par":3,"si":16,"m":152},{"hole":16,"par":5,"si":11,"m":497},{"hole":17,"par":4,"si":9,"m":360},{"hole":18,"par":4,"si":6,"m":380}];
+const SET_LABELS = {"18": "Full 18", "front9": "Front 9", "back9": "Back 9"};
+const REF_TOTAL_M = 6217;
+
+/* ==== helpers ==== */
+const uid = () => Math.random().toString(36).slice(2,9);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function holesFor(mode){ return mode==="front9"?COURSE.slice(0,9):mode==="back9"?COURSE.slice(9,18):COURSE; }
+
+function allocate(courseHcp, holes){
+  const map={}; holes.forEach(h=>map[h.hole]=0);
+  const n=holes.length; if(!n) return map;
+  const ch=Math.round(courseHcp);
+  if(ch>=0){ const full=Math.floor(ch/n), extra=ch%n;
+    holes.forEach(h=>map[h.hole]=full);
+    holes.slice().sort((a,b)=>a.si-b.si).slice(0,extra).forEach(h=>map[h.hole]+=1);
+  } else { const abs=-ch, full=Math.floor(abs/n), extra=abs%n;
+    holes.forEach(h=>map[h.hole]=-full);
+    holes.slice().sort((a,b)=>b.si-a.si).slice(0,extra).forEach(h=>map[h.hole]-=1);
+  }
+  return map;
+}
+const courseHcpFor = (h,mode) => mode==="18" ? (Number(h)||0) : (Number(h)||0)/2;
+function stableford(g,par,s){ if(g==null) return null; return Math.max(0, par-(g-s)+2); }
+function noteFor(g,par){ if(g==null) return "empty"; const d=g-par; return d<=-2?"eagle":d===-1?"birdie":d===0?"par":d===1?"bogey":"double"; }
+function netToPar(g,par,s){ const d=g-s-par; return d===0?"level":d>0?("+"+d):(""+d); }
+
+/* geo */
+function hav(a,b){ const R=6371000,r=Math.PI/180;
+  const dLat=(b.lat-a.lat)*r, dLng=(b.lng-a.lng)*r, la1=a.lat*r, la2=b.lat*r;
+  const x=Math.sin(dLat/2)**2 + Math.cos(la1)*Math.cos(la2)*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.min(1,Math.sqrt(x)));
+}
+const fmtM = m => m>=1000 ? (m/1000).toFixed(2)+" km" : Math.round(m)+" m";
+function accClass(a){ return a<=6?"acc-good":a<=12?"acc-ok":"acc-poor"; }
+function pointsFor(pid,hole){ return (S.round.shots[pid] && S.round.shots[pid][hole]) || []; }
+function legs(pts){ const out=[]; for(let i=1;i<pts.length;i++) out.push(hav(pts[i-1],pts[i])); return out; }
+function totalDist(pts){ return legs(pts).reduce((a,b)=>a+b,0); }
+
+/* ==== state ==== */
+const S = { view:"home", members:[], rounds:[], round:null, viewId:null,
+  ui:{ editId:null, showCard:false, confirmEnd:false, showMaps:false, capturing:null, trail:{}, setFmt:"stableford", setMode:"18", picked:[] } };
+
+function load(){
+  try{ S.members = JSON.parse(localStorage.getItem(APP_KEY+":members"))||[]; }catch(e){ S.members=[]; }
+  try{ S.rounds = JSON.parse(localStorage.getItem(APP_KEY+":rounds"))||[]; }catch(e){ S.rounds=[]; }
+  try{ const a=JSON.parse(localStorage.getItem(APP_KEY+":active")); if(a && !a.finished){ S.round=a; S.view="play"; } }catch(e){}
+}
+function saveMembers(){ localStorage.setItem(APP_KEY+":members", JSON.stringify(S.members)); }
+function saveRounds(){ localStorage.setItem(APP_KEY+":rounds", JSON.stringify(S.rounds)); }
+function saveActive(){ localStorage.setItem(APP_KEY+":active", JSON.stringify(S.round)); }
+
+/* ==== scoring aggregates ==== */
+function liveTotals(round){
+  const maps={}; round.players.forEach(p=>maps[p.id]=allocate(p.courseHcp, round.holes));
+  return round.players.map(p=>{
+    let value=0,thru=0,toPar=0;
+    round.holes.forEach(h=>{ const g=round.scores[p.id][h.hole]; if(g==null) return;
+      thru++; const s=maps[p.id][h.hole];
+      if(round.format==="stableford") value+=stableford(g,h.par,s);
+      else { value+=g-s; toPar+=(g-s)-h.par; }
+    });
+    const toParStr = toPar===0?"E":toPar>0?("+"+toPar):(""+toPar);
+    return {id:p.id,name:p.name,value,thru,toParStr,toPar};
+  }).sort((a,b)=> round.format==="stableford" ? b.value-a.value : a.toPar-b.toPar);
+}
+function leaderboard(round){
+  const maps={}; round.players.forEach(p=>maps[p.id]=allocate(p.courseHcp, round.holes));
+  return round.players.map(p=>{
+    let points=0,gross=0,net=0;
+    round.holes.forEach(h=>{ const g=round.scores[p.id][h.hole]; if(g==null) return;
+      gross+=g; const s=maps[p.id][h.hole]; net+=g-s; points+=stableford(g,h.par,s)||0; });
+    return {id:p.id,name:p.name,points,gross,net};
+  }).sort((a,b)=> round.format==="stableford" ? b.points-a.points : a.net-b.net);
+}
+
+/* ==== actions ==== */
+function addMember(){
+  const n=document.getElementById("m-name"), h=document.getElementById("m-hcp");
+  const name=(n.value||"").trim(); if(!name) return;
+  S.members.push({id:uid(),name,handicap:h.value===""?0:Number(h.value)});
+  saveMembers(); n.value=""; h.value=""; render(); document.getElementById("m-name").focus();
+}
+function saveHcp(id){
+  const f=document.getElementById("edit-hcp"); const v=f?f.value:"";
+  S.members=S.members.map(m=>m.id===id?{...m,handicap:v===""?0:Number(v)}:m);
+  S.ui.editId=null; saveMembers(); render();
+}
+function startRound(){
+  const holes=holesFor(S.ui.setMode);
+  const players=S.ui.picked.map(id=>{ const m=S.members.find(x=>x.id===id);
+    return {id,name:m.name,handicap:m.handicap,courseHcp:courseHcpFor(m.handicap,S.ui.setMode)}; });
+  const r={id:uid(),date:new Date().toISOString(),format:S.ui.setFmt,holesMode:S.ui.setMode,holes,players,scores:{},shots:{},idx:0,finished:false};
+  players.forEach(p=>{ r.scores[p.id]={}; r.shots[p.id]={}; });
+  S.round=r; saveActive(); S.view="play"; S.ui.picked=[]; render();
+}
+function step(pid,delta){
+  const hole=S.round.holes[S.round.idx];
+  const cur=S.round.scores[pid][hole.hole];
+  let v = cur==null ? hole.par : cur+delta;
+  v=Math.max(1,Math.min(15,v));
+  S.round.scores[pid][hole.hole]=v; saveActive(); render();
+}
+function goHole(d){ const n=S.round.idx+d; if(n<0||n>=S.round.holes.length) return; S.round.idx=n; S.ui.showCard=false; saveActive(); render(); window.scrollTo({top:0,behavior:"smooth"}); }
+function finishRound(){ S.round.finished=true; S.rounds.unshift(S.round); S.rounds=S.rounds.slice(0,60); saveRounds(); localStorage.setItem(APP_KEY+":active","null"); S.viewId=S.round.id; S.view="summary"; S.ui.confirmEnd=false; render(); }
+function abandonRound(){ localStorage.setItem(APP_KEY+":active","null"); S.round=null; S.view="home"; render(); }
+
+/* geolocation capture: keep best fix over a short window */
+let capState=null;
+function captureShot(pid){
+  if(!("geolocation" in navigator)){ alert("This device has no location support."); return; }
+  const hole=S.round.holes[S.round.idx].hole;
+  if(capState){ return; }
+  let best=null, done=false;
+  S.ui.capturing=pid; render();
+  const wid=navigator.geolocation.watchPosition(pos=>{
+    const c=pos.coords;
+    if(!best || c.accuracy<best.acc){ best={lat:c.latitude,lng:c.longitude,acc:c.accuracy,t:Date.now()}; }
+    const el=document.getElementById("cap-"+pid);
+    if(el) el.textContent = "Locating\u2026 \u00b1"+Math.round(best.acc)+" m";
+    if(best.acc<=3) finish();
+  }, err=>{ fail(err); }, {enableHighAccuracy:true, maximumAge:0, timeout:20000});
+  const timer=setTimeout(finish, 7000);
+  capState={wid,timer};
+  function finish(){
+    if(done) return; done=true; clearTimeout(timer); navigator.geolocation.clearWatch(wid); capState=null;
+    S.ui.capturing=null;
+    if(best){ if(!S.round.shots[pid]) S.round.shots[pid]={}; if(!S.round.shots[pid][hole]) S.round.shots[pid][hole]=[]; S.round.shots[pid][hole].push(best); S.ui.trail[pid+"-"+hole]=true; saveActive(); }
+    render();
+  }
+  function fail(err){
+    if(done) return; done=true; clearTimeout(timer); navigator.geolocation.clearWatch(wid); capState=null;
+    S.ui.capturing=null; render();
+    const msg = err && err.code===1 ? "Location permission was blocked. Enable it for this site in your browser settings."
+      : err && err.code===3 ? "Couldn't get a fix in time - try again in the open."
+      : "Location unavailable right now.";
+    alert(msg);
+  }
+}
+function undoShot(pid){ const hole=S.round.holes[S.round.idx].hole; const arr=S.round.shots[pid]&&S.round.shots[pid][hole]; if(arr&&arr.length){ arr.pop(); saveActive(); render(); } }
+function clearShots(pid){ const hole=S.round.holes[S.round.idx].hole; if(S.round.shots[pid]) S.round.shots[pid][hole]=[]; saveActive(); render(); }
+function toggleTrail(pid){ const hole=S.round.holes[S.round.idx].hole; const k=pid+"-"+hole; S.ui.trail[k]=!S.ui.trail[k]; render(); }
+
+/* ==== shot trail SVG (self-contained, offline) ==== */
+function trailSVG(pts){
+  const W=300,H=190,pad=24;
+  if(pts.length===1){
+    return `<svg viewBox="0 0 ${W} ${H}"><circle cx="${W/2}" cy="${H/2}" r="6" fill="#6bd08f"/><text x="${W/2}" y="${H/2-14}" fill="#fff" font-size="12" text-anchor="middle" font-family="sans-serif">1</text><text x="${W/2}" y="${H/2+26}" fill="rgba(255,255,255,.7)" font-size="11" text-anchor="middle" font-family="sans-serif">\u00b1${Math.round(pts[0].acc)} m fix</text></svg>`;
+  }
+  const lat0=pts[0].lat, lng0=pts[0].lng;
+  const mLat=110540, mLng=111320*Math.cos(lat0*Math.PI/180);
+  const P=pts.map(p=>({x:(p.lng-lng0)*mLng, y:(p.lat-lat0)*mLat}));
+  let minX=Math.min(...P.map(p=>p.x)), maxX=Math.max(...P.map(p=>p.x));
+  let minY=Math.min(...P.map(p=>p.y)), maxY=Math.max(...P.map(p=>p.y));
+  let spanX=Math.max(maxX-minX,1), spanY=Math.max(maxY-minY,1);
+  const scale=Math.min((W-2*pad)/spanX,(H-2*pad)/spanY);
+  const ox=(W-spanX*scale)/2 - minX*scale, oy=(H-spanY*scale)/2 - minY*scale;
+  const sx=x=>x*scale+ox, sy=y=>H-(y*scale+oy);
+  let line="", dots="";
+  P.forEach((p,i)=>{ if(i) line+=`${sx(P[i-1].x).toFixed(1)},${sy(P[i-1].y).toFixed(1)} ${sx(p.x).toFixed(1)},${sy(p.y).toFixed(1)} `; });
+  P.forEach((p,i)=>{ const first=i===0,last=i===P.length-1;
+    const col=first?"#6bd08f":last?"#e9c46a":"#ffffff", r=first||last?5.5:4;
+    dots+=`<circle cx="${sx(p.x).toFixed(1)}" cy="${sy(p.y).toFixed(1)}" r="${r}" fill="${col}"/>`;
+    dots+=`<text x="${(sx(p.x)+7).toFixed(1)}" y="${(sy(p.y)-6).toFixed(1)}" fill="#fff" font-size="10" font-family="sans-serif">${i+1}</text>`;
+  });
+  // scale bar
+  const spanM=Math.max(spanX,spanY);
+  const nice=[5,10,25,50,100,150,200,300].reduce((a,b)=>Math.abs(b-spanM/3)<Math.abs(a-spanM/3)?b:a,50);
+  const barPx=nice*scale;
+  const bar=`<line x1="12" y1="${H-12}" x2="${12+barPx}" y2="${H-12}" stroke="rgba(255,255,255,.8)" stroke-width="2"/><text x="12" y="${H-16}" fill="rgba(255,255,255,.8)" font-size="10" font-family="sans-serif">${nice} m</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}"><polyline points="${line.trim()}" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.6" stroke-dasharray="3 3"/>${dots}${bar}</svg>`;
+}
+
+/* ==== views ==== */
+function view_home(){
+  const active = S.round && !S.round.finished;
+  let h="";
+  if(active) h+=`<button class="resume-card" data-action="resume"><span class="resume-dot"></span><span><strong>Resume round in progress</strong><em>Pick up where you left off</em></span><span class="resume-arrow">&rarr;</span></button>`;
+  h+=`<button class="tee-btn" data-action="new-round" ${S.members.length===0?"disabled":""}><span class="tee-btn-label">Start a new round</span><span class="tee-btn-sub">${S.members.length===0?"Add members below to begin":"Stableford or stroke play"}</span></button>`;
+  // members
+  h+=`<section class="panel"><div class="panel-head"><h2>Members</h2><span class="count">${S.members.length}</span></div>`;
+  h+=`<div class="add-row"><input class="fld fld-name" id="m-name" placeholder="Member name" autocomplete="off"><input class="fld fld-hcp" id="m-hcp" placeholder="Hcp" inputmode="numeric"><button class="add-btn" data-action="add-member">Add</button></div>`;
+  if(S.members.length===0) h+=`<p class="empty">No members yet. Add a name and playing handicap to get started.</p>`;
+  else { h+=`<ul class="member-list">`;
+    S.members.forEach(m=>{ h+=`<li class="member"><span class="m-name">${esc(m.name)}</span>`;
+      if(S.ui.editId===m.id) h+=`<span class="m-edit"><input class="fld fld-hcp-sm" id="edit-hcp" inputmode="numeric" value="${m.handicap}"><button class="mini" data-action="save-hcp" data-id="${m.id}">Save</button></span>`;
+      else h+=`<button class="m-hcp" data-action="edit-hcp" data-id="${m.id}"><span class="m-hcp-num">${m.handicap}</span><span class="m-hcp-lbl">hcp</span></button>`;
+      h+=`<button class="m-del" data-action="del-member" data-id="${m.id}" aria-label="Remove">&times;</button></li>`;
+    });
+    h+=`</ul>`;
+  }
+  h+=`</section>`;
+  // recent rounds
+  if(S.rounds.length){ h+=`<section class="panel"><div class="panel-head"><h2>Recent rounds</h2></div><ul class="round-list">`;
+    S.rounds.slice(0,8).forEach(r=>{ const lead=leaderboard(r)[0]; const d=new Date(r.date).toLocaleDateString("en-AU",{day:"numeric",month:"short"});
+      h+=`<li><button class="round-row" data-action="open-round" data-id="${r.id}"><span class="rr-date">${d}</span><span class="rr-mid"><span class="rr-fmt">${r.format==="stableford"?"Stableford":"Stroke"} \u00b7 ${SET_LABELS[r.holesMode]}</span>${lead?`<span class="rr-winner">\uD83C\uDFC6 ${esc(lead.name)} \u00b7 ${r.format==="stableford"?lead.points+" pts":"net "+lead.net}</span>`:""}</span><span class="rr-arrow">&rarr;</span></button></li>`;
+    });
+    h+=`</ul></section>`;
+  }
+  // reference card
+  h+=`<details class="ref"><summary>${REF_TITLE}</summary><div class="card-scroll"><table class="scorecard ref-card"><thead><tr class="sc-hole"><th class="sc-corner">Hole</th>`;
+  COURSE.forEach(x=>h+=`<th class="sc-h tee-${x.tee||"none"}">${x.hole}</th>`); h+=`<th class="sc-tot grand">TOT</th></tr></thead><tbody>`;
+  h+=`<tr><th class="sc-player">Par</th>`; COURSE.forEach(x=>h+=`<td class="sc-cell"><span class="mark">${x.par}</span></td>`); h+=`<td class="sc-tot grand">72</td></tr>`;
+  h+=`<tr><th class="sc-player">Index</th>`; COURSE.forEach(x=>h+=`<td class="sc-cell"><span class="mark dim">${x.si}</span></td>`); h+=`<td class="sc-tot grand">\u2013</td></tr>`;
+  h+=`<tr><th class="sc-player">Metres</th>`; COURSE.forEach(x=>h+=`<td class="sc-cell"><span class="mark dim">${x.m}</span></td>`); h+=`<td class="sc-tot grand">${REF_TOTAL_M}</td></tr>`;
+  h+=`</tbody></table></div>${REF_NOTE?`<p class="ref-note">${REF_NOTE}</p>`:""}</details>`;
+  return h;
+}
+
+function view_setup(){
+  let h=`<div class="section-title"><span>New round</span></div>`;
+  h+=`<section class="panel"><h3 class="sub">Format</h3><div class="seg">`;
+  [["stableford","Stableford"],["stroke","Stroke play"]].forEach(([v,l])=>h+=`<button class="seg-btn ${S.ui.setFmt===v?"on":""}" data-action="set-fmt" data-val="${v}">${l}</button>`);
+  h+=`</div><h3 class="sub">Holes</h3><div class="seg col">`;
+  ["18","front9","back9"].forEach(v=>h+=`<button class="seg-btn ${S.ui.setMode===v?"on":""}" data-action="set-mode" data-val="${v}">${SET_LABELS[v]}</button>`);
+  h+=`</div></section>`;
+  h+=`<section class="panel"><div class="panel-head"><h3 class="sub" style="margin:0">Players</h3><span class="count">${S.ui.picked.length}</span></div><ul class="pick-list">`;
+  S.members.forEach(m=>{ const on=S.ui.picked.includes(m.id); const ch=Math.round(courseHcpFor(m.handicap,S.ui.setMode));
+    h+=`<li><button class="pick ${on?"on":""}" data-action="toggle-player" data-id="${m.id}"><span class="tick ${on?"on":""}">${on?"\u2713":""}</span><span class="pick-name">${esc(m.name)}</span><span class="pick-hcp">plays off ${ch}</span></button></li>`;
+  });
+  h+=`</ul></section>`;
+  h+=`<div class="btn-row"><button class="ghost" data-action="nav-home">Cancel</button><button class="primary" data-action="start-round" ${S.ui.picked.length===0?"disabled":""}>Tee off &rarr;</button></div>`;
+  return h;
+}
+
+function view_play(){
+  const R=S.round, hole=R.holes[R.idx];
+  const maps={}; R.players.forEach(p=>maps[p.id]=allocate(p.courseHcp,R.holes));
+  const board=liveTotals(R);
+  const secure = window.isSecureContext && ("geolocation" in navigator);
+  let h=`<div class="board">`;
+  board.forEach((b,i)=>{ h+=`<div class="board-cell ${i===0&&b.thru>0?"leading":""}"><span class="bc-name">${esc(b.name)}</span><span class="bc-val">${R.format==="stableford"?b.value:(b.thru?b.toParStr:"\u2013")}</span><span class="bc-sub">${R.format==="stableford"?"pts":"to par"} \u00b7 ${b.thru} thru</span></div>`; });
+  h+=`</div>`;
+  h+=`<div class="hole-head"><button class="nav" data-action="nav-hole" data-dir="-1" ${R.idx===0?"disabled":""}>&lsaquo;</button><div class="hole-id">`;
+  if(CLUB.teeDuality && hole.tee) h+=`<span class="tee-chip ${hole.tee}">${hole.tee==="white"?"White marker":"Blue marker"}</span>`;
+  h+=`<span class="hi-num">${hole.hole}</span><span class="hi-meta">Par ${hole.par} \u00b7 SI ${hole.si} \u00b7 ${hole.m}m</span></div><button class="nav" data-action="nav-hole" data-dir="1" ${R.idx===R.holes.length-1?"disabled":""}>&rsaquo;</button></div>`;
+  h+=`<div class="hole-progress">`;
+  R.holes.forEach((x,i)=>{ const done=R.players.every(p=>R.scores[p.id][x.hole]!=null); h+=`<span class="pip ${x.tee||""} ${i===R.idx?"on":""} ${done?"done":""}"></span>`; });
+  h+=`</div>`;
+  if(!secure) h+=`<div class="gps-banner"><b>Shot GPS is off.</b> Location needs this page opened over https (host it, or Add to Home Screen from an https link). Scoring works fine without it.</div>`;
+  h+=`<div class="entry-list">`;
+  R.players.forEach(p=>{
+    const s=maps[p.id][hole.hole], g=R.scores[p.id][hole.hole];
+    const pts=stableford(g,hole.par,s), net=g==null?null:g-s;
+    h+=`<div class="entry"><div class="entry-top"><span class="e-name">${esc(p.name)}</span><span class="e-strokes">${s>0?"\u2022".repeat(Math.min(s,3)):s<0?"\u2212":"\u2014"}<em>${s>0?("+"+s+" shot"+(s>1?"s":"")):s<0?"gives 1":"no shot"}</em></span></div>`;
+    h+=`<div class="stepper"><button class="st-btn minus" data-action="step" data-pid="${p.id}" data-delta="-1">\u2212</button><div class="st-val note-${noteFor(g,hole.par)}"><span class="st-num">${g==null?"\u2013":g}</span></div><button class="st-btn plus" data-action="step" data-pid="${p.id}" data-delta="1">+</button></div>`;
+    h+=`<div class="entry-foot">${g==null?`<span class="ef-hint">Tap + to enter (starts at par ${hole.par})</span>`:R.format==="stableford"?`<span class="ef-pts"><strong>${pts}</strong> point${pts===1?"":"s"} \u00b7 net ${net}</span>`:`<span class="ef-pts">net ${net} \u00b7 ${netToPar(g,hole.par,s)}</span>`}</div>`;
+    // shots
+    if(secure){
+      const pts2=pointsFor(p.id,hole.hole), busy=S.ui.capturing===p.id, k=p.id+"-"+hole.hole, open=S.ui.trail[k];
+      h+=`<div class="shots"><div class="shot-row"><button class="mark-btn ${busy?"busy":""}" data-action="mark-shot" data-pid="${p.id}" ${busy?"disabled":""}>${busy?`\uD83D\uDCE1 <span id="cap-${p.id}">Locating\u2026</span>`:pts2.length?`\uD83D\uDCCD Mark next position`:`\uD83D\uDCCD Mark ball position`}</button>`;
+      if(pts2.length && !busy) h+=`<button class="mark-mini" data-action="undo-shot" data-pid="${p.id}" title="Undo last">\u21b6</button>`;
+      h+=`</div>`;
+      if(pts2.length){
+        const lg=legs(pts2), tot=totalDist(pts2), last=lg.length?lg[lg.length-1]:0;
+        h+=`<button class="shot-sum" data-action="toggle-trail" data-pid="${p.id}"><span><b>${pts2.length}</b> mark${pts2.length>1?"s":""} \u00b7 ${fmtM(tot)}${lg.length?` \u00b7 last leg ${fmtM(last)}`:""}</span><span class="chev">${open?"\u25be map":"\u25b8 map"}</span></button>`;
+        if(open){
+          h+=`<div class="trail-wrap">${trailSVG(pts2)}<ul class="legs">`;
+          pts2.forEach((pt,i)=>{ const legTxt = i===0?"Start":fmtM(lg[i-1]); h+=`<li><span>${i+1}. ${i===0?"Start position":"leg "+i}</span><span class="acc ${accClass(pt.acc)}">${legTxt} \u00b7 \u00b1${Math.round(pt.acc)}m</span></li>`; });
+          h+=`</ul><div style="text-align:right;margin-top:6px"><button class="mark-mini" data-action="clear-shots" data-pid="${p.id}" style="height:34px;font-size:.78rem;padding:0 12px">Clear hole</button></div></div>`;
+        }
+      }
+      h+=`</div>`;
+    }
+    h+=`</div>`;
+  });
+  h+=`</div>`;
+  h+=`<div class="play-actions"><button class="ghost sm" data-action="toggle-card">${S.ui.showCard?"Hide card":"View card"}</button>`;
+  h+= R.idx===R.holes.length-1 ? `<button class="primary" data-action="ask-finish">Finish round &rarr;</button>` : `<button class="primary" data-action="nav-hole" data-dir="1">Next hole &rarr;</button>`;
+  h+=`</div>`;
+  if(S.ui.showCard) h+=scorecardHTML(R,false);
+  h+=`<button class="abandon" data-action="abandon">Discard round</button>`;
+  if(S.ui.confirmEnd){ const all=R.players.every(p=>R.holes.every(x=>R.scores[p.id][x.hole]!=null));
+    h+=`<div class="modal" data-action="cancel-finish"><div class="modal-box" data-stop="1"><h3>Finish the round?</h3><p>${all?"All scores are in.":"Some holes are still blank - they'll count as no score."}</p><div class="btn-row"><button class="ghost" data-action="cancel-finish">Keep playing</button><button class="primary" data-action="confirm-finish">Finish &amp; score</button></div></div></div>`;
+  }
+  return h;
+}
+
+function scorecardHTML(R,finished){
+  const isFull=R.holes.length===18, front=R.holes.slice(0,9), back=R.holes.slice(9,18);
+  const segs = isFull ? [["OUT",front],["IN",back]] : [["",R.holes]];
+  let h=`<div class="card-scroll"><table class="scorecard"><thead><tr class="sc-hole"><th class="sc-corner">Hole</th>`;
+  segs.forEach(([lbl,seg])=>{ seg.forEach(x=>h+=`<th class="sc-h tee-${x.tee||"none"}">${x.hole}</th>`); if(lbl) h+=`<th class="sc-tot">${lbl}</th>`; });
+  if(isFull) h+=`<th class="sc-tot grand">TOT</th>`; h+=`</tr><tr class="sc-par"><th class="sc-corner">Par</th>`;
+  segs.forEach(([lbl,seg])=>{ seg.forEach(x=>h+=`<th class="sc-h">${x.par}</th>`); if(lbl) h+=`<th class="sc-tot">${seg.reduce((a,x)=>a+x.par,0)}</th>`; });
+  if(isFull) h+=`<th class="sc-tot grand">${R.holes.reduce((a,x)=>a+x.par,0)}</th>`; h+=`</tr></thead><tbody>`;
+  R.players.forEach(p=>{ const sc=R.scores[p.id];
+    h+=`<tr><th class="sc-player">${esc(p.name)}</th>`;
+    segs.forEach(([lbl,seg])=>{ seg.forEach(x=>{ const g=sc[x.hole]; h+=`<td class="sc-cell"><span class="mark mark-${noteFor(g,x.par)}">${g==null?"":g}</span></td>`; });
+      if(lbl) h+=`<td class="sc-tot">${seg.reduce((a,x)=>a+(sc[x.hole]||0),0)}</td>`; });
+    if(isFull) h+=`<td class="sc-tot grand">${R.holes.reduce((a,x)=>a+(sc[x.hole]||0),0)}</td>`; h+=`</tr>`;
+  });
+  h+=`</tbody></table>`;
+  if(finished) h+=`<p class="card-note">Totals show gross strokes; ${R.format==="stableford"?"Stableford points":"net results"} are on the leaderboard above. Circles = birdie or better, squares = bogey or worse.</p>`;
+  h+=`</div>`;
+  return h;
+}
+
+function view_summary(){
+  const R = S.rounds.find(r=>r.id===S.viewId) || S.round;
+  const board=leaderboard(R);
+  const d=new Date(R.date).toLocaleDateString("en-AU",{weekday:"long",day:"numeric",month:"long"});
+  let h=`<div class="trophy-head"><div class="trophy-mark">\uD83C\uDFC6</div><h2>${d}</h2><p class="th-sub">${R.format==="stableford"?"Stableford":"Stroke play"} \u00b7 ${SET_LABELS[R.holesMode]}</p></div>`;
+  h+=`<ol class="leaderboard">`;
+  board.forEach((row,i)=>{ const ch=Math.round(R.players.find(p=>p.id===row.id).courseHcp);
+    h+=`<li class="lb-row ${i===0?"win":""}"><span class="lb-pos">${i+1}</span><span class="lb-name">${esc(row.name)}<em>plays off ${ch}</em></span><span class="lb-score">${R.format==="stableford"?`<strong>${row.points}</strong><em>pts</em>`:`<strong>${row.net}</strong><em>net \u00b7 ${row.gross} gross</em>`}</span></li>`;
+  });
+  h+=`</ol>`;
+  h+=scorecardHTML(R,true);
+  // shot maps if any
+  const anyShots = R.players.some(p=> R.holes.some(x=> (R.shots[p.id]&&R.shots[p.id][x.hole]&&R.shots[p.id][x.hole].length)));
+  if(anyShots){
+    h+=`<button class="ghost sm" style="width:100%" data-action="toggle-maps">${S.ui.showMaps?"Hide shot maps":"Show shot maps"}</button>`;
+    if(S.ui.showMaps){
+      R.players.forEach(p=>{
+        const holesWith = R.holes.filter(x=> R.shots[p.id]&&R.shots[p.id][x.hole]&&R.shots[p.id][x.hole].length);
+        if(!holesWith.length) return;
+        h+=`<section class="panel"><div class="panel-head"><h2>${esc(p.name)}</h2></div>`;
+        holesWith.forEach(x=>{ const pts=R.shots[p.id][x.hole];
+          h+=`<div style="margin-bottom:10px"><div class="sub" style="margin:0 0 6px">Hole ${x.hole} \u00b7 ${fmtM(totalDist(pts))}</div>${trailSVG(pts)}</div>`;
+        });
+        h+=`</section>`;
+      });
+    }
+  }
+  h+=`<button class="primary wide" data-action="nav-home">Back to clubhouse</button>`;
+  return h;
+}
+
+/* ==== render + events ==== */
+function render(){
+  const app=document.getElementById("app");
+  let body="";
+  if(S.view==="home") body=view_home();
+  else if(S.view==="setup") body=view_setup();
+  else if(S.view==="play"&&S.round) body=view_play();
+  else if(S.view==="summary") body=view_summary();
+  const hasActive=S.round && !S.round.finished;
+  app.innerHTML =
+    `<header class="masthead"><button class="brand" data-action="brand"><span class="crest">${CLUB_CREST}</span><span><span class="brand-name">${CLUB.name}</span><span class="brand-sub">${CLUB.sub}</span></span></button>${hasActive?`<span class="live-tag">On the course</span>`:""}</header>`+
+    `<main class="wrap"><div class="stack">${body}</div></main>`+
+    `<footer class="foot">${CLUB_FOOTER}</footer>`;
+}
+
+document.addEventListener("click", e=>{
+  const t=e.target.closest("[data-action]"); if(!t) return;
+  const a=t.dataset.action, id=t.dataset.id, pid=t.dataset.pid;
+  switch(a){
+    case "brand": S.viewId=null; S.view = hasActiveRound()?"play":"home"; render(); break;
+    case "nav-home": S.viewId=null; S.view="home"; render(); break;
+    case "new-round": S.view="setup"; render(); break;
+    case "resume": S.view="play"; render(); break;
+    case "open-round": S.viewId=id; S.view="summary"; S.ui.showMaps=false; render(); break;
+    case "add-member": addMember(); break;
+    case "del-member": S.members=S.members.filter(m=>m.id!==id); saveMembers(); render(); break;
+    case "edit-hcp": S.ui.editId=id; render(); const f=document.getElementById("edit-hcp"); if(f){f.focus();f.select();} break;
+    case "save-hcp": saveHcp(id); break;
+    case "set-fmt": S.ui.setFmt=t.dataset.val; render(); break;
+    case "set-mode": S.ui.setMode=t.dataset.val; render(); break;
+    case "toggle-player": S.ui.picked = S.ui.picked.includes(id)?S.ui.picked.filter(x=>x!==id):[...S.ui.picked,id]; render(); break;
+    case "start-round": if(S.ui.picked.length) startRound(); break;
+    case "nav-hole": goHole(Number(t.dataset.dir)); break;
+    case "step": step(pid, Number(t.dataset.delta)); break;
+    case "mark-shot": captureShot(pid); break;
+    case "undo-shot": undoShot(pid); break;
+    case "clear-shots": clearShots(pid); break;
+    case "toggle-trail": toggleTrail(pid); break;
+    case "toggle-card": S.ui.showCard=!S.ui.showCard; render(); break;
+    case "toggle-maps": S.ui.showMaps=!S.ui.showMaps; render(); break;
+    case "ask-finish": S.ui.confirmEnd=true; render(); break;
+    case "cancel-finish": if(t.dataset.stop) break; S.ui.confirmEnd=false; render(); break;
+    case "confirm-finish": finishRound(); break;
+    case "abandon": if(confirm("Discard this round? Scores and shots for it will be lost.")) abandonRound(); break;
+  }
+});
+document.addEventListener("keydown", e=>{
+  if((e.target.id==="m-name"||e.target.id==="m-hcp") && e.key==="Enter"){ e.preventDefault(); addMember(); }
+  if(e.target.id==="edit-hcp" && e.key==="Enter"){ e.preventDefault(); saveHcp(S.ui.editId); }
+});
+function hasActiveRound(){ return S.round && !S.round.finished; }
+
+load(); render();
+
+/* PWA: register service worker + surface silent updates */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").then(reg => {
+      reg.addEventListener("updatefound", () => {
+        const nw = reg.installing;
+        nw && nw.addEventListener("statechange", () => {
+          if (nw.state === "installed" && navigator.serviceWorker.controller) {
+            // new version cached; applies on next launch
+            console.log("Update ready - will apply next open");
+          }
+        });
+      });
+    }).catch(()=>{});
+  });
+}
+
+</script>
+</body>
+</html>
